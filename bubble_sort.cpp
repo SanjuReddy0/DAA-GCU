@@ -4,7 +4,7 @@ using namespace std;
 int main () 
 {
     int n;
-    cout << "enter number of elements:";
+    cout << "enter number of elements: ";
     cin >>n;
     
     int a [n];
