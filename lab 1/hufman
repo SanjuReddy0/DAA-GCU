@@ -1,1 +1,66 @@
+#include <iostream>
+#include <queue>
+#include <unordered_map>
+#include <string>
 
+using namespace std;
+
+struct Node {
+    char ch;
+    int freq;
+    Node *left, *right;
+    
+    Node(char ch, int freq, Node* left = nullptr, Node* right = nullptr) {
+        this->ch = ch;
+        this->freq = freq;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+struct Compare {
+    bool operator()(Node* l, Node* r) {
+        return l->freq > r->freq;
+    }
+};
+
+void printCodes(Node* root, string code) {
+    if (!root) return;
+    
+    if (!root->left && !root->right) {
+        cout << root->ch << ": " << code << "\n";
+    }
+    
+    printCodes(root->left, code + "0");
+    printCodes(root->right, code + "1");
+}
+
+void buildHuffmanTree(string text) {
+    unordered_map<char, int> freq;
+    for (char ch : text) freq[ch]++;
+
+    priority_queue<Node*, vector<Node*>, Compare> pq;
+
+    for (auto pair : freq) {
+        pq.push(new Node(pair.first, pair.second));
+    }
+
+    while (pq.size() > 1) {
+        Node *left = pq.top(); pq.pop();
+        Node *right = pq.top(); pq.pop();
+
+        int sum = left->freq + right->freq;
+        pq.push(new Node('\0', sum, left, right));
+    }
+
+    Node* root = pq.top();
+    
+    cout << "Huffman Codes for: '" << text << "'\n--------------------------\n";
+    printCodes(root, "");
+}
+
+int main() {
+    string text = "hello huffman";
+    buildHuffmanTree(text);
+    return 0;
+}
